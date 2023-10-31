@@ -19,10 +19,12 @@ int HT_SIZE = MAX_HT_SIZE;
  * <0,HT_SIZE-1>. Ideální rozptylovací funkce by měla rozprostírat klíče
  * rovnoměrně po všech indexech. Zamyslete sa nad kvalitou zvolené funkce.
  */
-int get_hash(char *key) {
+int get_hash(char *key)
+{
   int result = 1;
   int length = strlen(key);
-  for (int i = 0; i < length; i++) {
+  for (int i = 0; i < length; i++)
+  {
     result += key[i];
   }
   return (result % HT_SIZE);
@@ -31,7 +33,12 @@ int get_hash(char *key) {
 /*
  * Inicializace tabulky — zavolá sa před prvním použitím tabulky.
  */
-void ht_init(ht_table_t *table) {
+void ht_init(ht_table_t *table)
+{
+  for (int i = 0; i < MAX_HT_SIZE; i++)
+  {
+    (*table)[i] = NULL;
+  }
 }
 
 /*
@@ -40,7 +47,18 @@ void ht_init(ht_table_t *table) {
  * V případě úspěchu vrací ukazatel na nalezený prvek; v opačném případě vrací
  * hodnotu NULL.
  */
-ht_item_t *ht_search(ht_table_t *table, char *key) {
+ht_item_t *ht_search(ht_table_t *table, char *key)
+{
+  int i = get_hash(key);
+  ht_item_t *head = (*table)[i];
+  while (head)
+  {
+    // key found
+    if (!strcmp(key, head->key))
+      return head;
+    head = head->next;
+  }
+
   return NULL;
 }
 
@@ -52,7 +70,20 @@ ht_item_t *ht_search(ht_table_t *table, char *key) {
  * Při implementaci využijte funkci ht_search. Pri vkládání prvku do seznamu
  * synonym zvolte nejefektivnější možnost a vložte prvek na začátek seznamu.
  */
-void ht_insert(ht_table_t *table, char *key, float value) {
+void ht_insert(ht_table_t *table, char *key, float value)
+{
+  ht_item_t *existing = ht_search(table, key);
+  if (existing)
+  {
+    existing->value = value;
+    return;
+  }
+  ht_item_t *tmp = malloc(sizeof(ht_item_t));
+  tmp->key = key;
+  tmp->value = value;
+  int hash = get_hash(key);
+  tmp->next = (*table)[hash];
+  (*table)[hash] = tmp;
 }
 
 /*
@@ -63,8 +94,13 @@ void ht_insert(ht_table_t *table, char *key, float value) {
  *
  * Při implementaci využijte funkci ht_search.
  */
-float *ht_get(ht_table_t *table, char *key) {
-  return NULL;
+float *ht_get(ht_table_t *table, char *key)
+{
+  ht_item_t *searched = ht_search(table, key);
+  if (!searched)
+    return NULL;
+
+  return &(searched->value);
 }
 
 /*
@@ -75,14 +111,44 @@ float *ht_get(ht_table_t *table, char *key) {
  *
  * Při implementaci NEPOUŽÍVEJTE funkci ht_search.
  */
-void ht_delete(ht_table_t *table, char *key) {
+void ht_delete(ht_table_t *table, char *key)
+{
+  int hash = get_hash(key);
+  ht_item_t *head = (*table)[hash];
+  ht_item_t *previous = head;
+  while (head)
+  {
+    if (!strcmp(head->key, key))
+    {
+      previous->next = head->next;
+      free(head->key);
+      free(head);
+      return;
+    }
+    previous = head;
+    head = head->next;
+  }
 }
 
 /*
  * Smazání všech prvků z tabulky.
  *
- * Funkce korektně uvolní všechny alokované zdroje a uvede tabulku do stavu po 
+ * Funkce korektně uvolní všechny alokované zdroje a uvede tabulku do stavu po
  * inicializaci.
  */
-void ht_delete_all(ht_table_t *table) {
+void ht_delete_all(ht_table_t *table)
+{
+  for (int i = 0; i < MAX_HT_SIZE; i++)
+  {
+    ht_item_t *head = (*table)[i];
+    ht_item_t *tmp = head;
+    while (head)
+    {
+      tmp = head;
+      head = head->next;
+      free(tmp->key);
+      free(tmp);
+    }
+    (*table)[i] = NULL;
+  }
 }

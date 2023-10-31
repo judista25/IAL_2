@@ -7,5 +7,7 @@ FILES=hashtable.c test.c test_util.c
 test: $(FILES)
 	$(CC) $(CFLAGS) -o $@ $(FILES)
 
+run:
+	./test.o
 clean:
 	rm -f test
