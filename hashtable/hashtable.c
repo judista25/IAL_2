@@ -11,6 +11,7 @@
 #include "hashtable.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 int HT_SIZE = MAX_HT_SIZE;
 
@@ -121,7 +122,6 @@ void ht_delete(ht_table_t *table, char *key)
     if (!strcmp(head->key, key))
     {
       previous->next = head->next;
-      free(head->key);
       free(head);
       return;
     }
@@ -146,7 +146,6 @@ void ht_delete_all(ht_table_t *table)
     {
       tmp = head;
       head = head->next;
-      free(tmp->key);
       free(tmp);
     }
     (*table)[i] = NULL;
