@@ -15,9 +15,10 @@
  * Uživatel musí zajistit, že inicializace se nebude opakovaně volat nad
  * inicializovaným stromem. V opačném případě může dojít k úniku paměti (memory
  * leak). Protože neinicializovaný ukazatel má nedefinovanou hodnotu, není
- * možné toto detekovat ve funkci. 
+ * možné toto detekovat ve funkci.
  */
-void bst_init(bst_node_t **tree) {
+void bst_init(bst_node_t **tree)
+{
 }
 
 /*
@@ -26,10 +27,20 @@ void bst_init(bst_node_t **tree) {
  * V případě úspěchu vrátí funkce hodnotu true a do proměnné value zapíše
  * hodnotu daného uzlu. V opačném případě funkce vrátí hodnotu false a proměnná
  * value zůstává nezměněná.
- * 
+ *
  * Funkci implementujte rekurzivně bez použité vlastních pomocných funkcí.
  */
-bool bst_search(bst_node_t *tree, char key, int *value) {
+bool bst_search(bst_node_t *tree, char key, int *value)
+{
+  if (tree != NULL)
+  {
+    if (!strcmp(tree->key, key))
+    {
+      *value = tree->value;
+      return true;
+    }
+    return false || bst_search(tree->left, key, value) || bst_search(tree->right, key, value);
+  }
   return false;
 }
 
@@ -40,27 +51,29 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
  * Jinak vložte nový listový uzel.
  *
  * Výsledný strom musí splňovat podmínku vyhledávacího stromu — levý podstrom
- * uzlu obsahuje jenom menší klíče, pravý větší. 
+ * uzlu obsahuje jenom menší klíče, pravý větší.
  *
  * Funkci implementujte rekurzivně bez použití vlastních pomocných funkcí.
  */
-void bst_insert(bst_node_t **tree, char key, int value) {
+void bst_insert(bst_node_t **tree, char key, int value)
+{
 }
 
 /*
  * Pomocná funkce která nahradí uzel nejpravějším potomkem.
- * 
+ *
  * Klíč a hodnota uzlu target budou nahrazeny klíčem a hodnotou nejpravějšího
  * uzlu podstromu tree. Nejpravější potomek bude odstraněný. Funkce korektně
  * uvolní všechny alokované zdroje odstraněného uzlu.
  *
  * Funkce předpokládá, že hodnota tree není NULL.
- * 
+ *
  * Tato pomocná funkce bude využitá při implementaci funkce bst_delete.
  *
  * Funkci implementujte rekurzivně bez použití vlastních pomocných funkcí.
  */
-void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
+void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree)
+{
 }
 
 /*
@@ -70,25 +83,27 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
  * Pokud má odstraněný uzel jeden podstrom, zdědí ho rodič odstraněného uzlu.
  * Pokud má odstraněný uzel oba podstromy, je nahrazený nejpravějším uzlem
  * levého podstromu. Nejpravější uzel nemusí být listem.
- * 
+ *
  * Funkce korektně uvolní všechny alokované zdroje odstraněného uzlu.
- * 
+ *
  * Funkci implementujte rekurzivně pomocí bst_replace_by_rightmost a bez
  * použití vlastních pomocných funkcí.
  */
-void bst_delete(bst_node_t **tree, char key) {
+void bst_delete(bst_node_t **tree, char key)
+{
 }
 
 /*
  * Zrušení celého stromu.
- * 
- * Po zrušení se celý strom bude nacházet ve stejném stavu jako po 
- * inicializaci. Funkce korektně uvolní všechny alokované zdroje rušených 
+ *
+ * Po zrušení se celý strom bude nacházet ve stejném stavu jako po
+ * inicializaci. Funkce korektně uvolní všechny alokované zdroje rušených
  * uzlů.
- * 
+ *
  * Funkci implementujte rekurzivně bez použití vlastních pomocných funkcí.
  */
-void bst_dispose(bst_node_t **tree) {
+void bst_dispose(bst_node_t **tree)
+{
 }
 
 /*
@@ -98,7 +113,8 @@ void bst_dispose(bst_node_t **tree) {
  *
  * Funkci implementujte rekurzivně bez použití vlastních pomocných funkcí.
  */
-void bst_preorder(bst_node_t *tree, bst_items_t *items) {
+void bst_preorder(bst_node_t *tree, bst_items_t *items)
+{
 }
 
 /*
@@ -108,7 +124,8 @@ void bst_preorder(bst_node_t *tree, bst_items_t *items) {
  *
  * Funkci implementujte rekurzivně bez použití vlastních pomocných funkcí.
  */
-void bst_inorder(bst_node_t *tree, bst_items_t *items) {
+void bst_inorder(bst_node_t *tree, bst_items_t *items)
+{
 }
 
 /*
@@ -118,5 +135,6 @@ void bst_inorder(bst_node_t *tree, bst_items_t *items) {
  *
  * Funkci implementujte rekurzivně bez použití vlastních pomocných funkcí.
  */
-void bst_postorder(bst_node_t *tree, bst_items_t *items) {
+void bst_postorder(bst_node_t *tree, bst_items_t *items)
+{
 }
