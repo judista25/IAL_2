@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -std=c11 
+CFLAGS=-Wall -std=c11 -pedantic
 FILES=hashtable.c test.c test_util.c
 
 .PHONY: test clean
