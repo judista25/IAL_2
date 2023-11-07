@@ -158,10 +158,14 @@ void bst_delete(bst_node_t **tree, char key)
           // no left tree
           free((*tree)->right);
           (*tree)->right = (*tree)->right->right;
+          return;
         }
         // no tree on the left or right so just free
         else
+        {
           free((*tree)->right);
+          return;
+        }
       }
     }
     // if left exist look if fits
@@ -181,13 +185,17 @@ void bst_delete(bst_node_t **tree, char key)
           // no left tree
           free((*tree)->left);
           (*tree)->left = (*tree)->left->right;
+          return;
         }
         // no tree on the left or right so just free
         else
+        {
           free((*tree)->left);
+          return;
+        }
       }
     }
-    else if ((*tree)->key < key)
+    if ((*tree)->key < key)
       bst_delete(&((*tree)->left), key);
     else
       bst_delete(&((*tree)->right), key);
@@ -210,7 +218,7 @@ void bst_dispose(bst_node_t **tree)
     bst_dispose(&(*tree)->left);
     bst_dispose(&(*tree)->right);
     free(*tree);
-    (*tree) = NULL;
+    //*tree = NULL;
   }
 }
 
