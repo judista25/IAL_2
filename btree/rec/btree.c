@@ -35,7 +35,7 @@ bool bst_search(bst_node_t *tree, char key, int *value)
 {
   if (tree != NULL)
   {
-    if (!strcmp(tree->key, key))
+    if (tree->key == key)
     {
       *value = tree->value;
       return true;
@@ -58,7 +58,41 @@ bool bst_search(bst_node_t *tree, char key, int *value)
  */
 void bst_insert(bst_node_t **tree, char key, int value)
 {
-  
+  if ((*tree) != NULL)
+  {
+    if ((*tree)->key == key)
+    {
+      (*tree)->value = value;
+      return;
+    }
+    // key is smaller go left
+    else if ((*tree)->key > key)
+    {
+      if ((*tree)->left != NULL)
+        bst_insert(&((*tree)->left), key, value);
+      // if next is empty insert
+      else
+      {
+        bst_node_t *tmp = malloc(sizeof(bst_node_t));
+        tmp->key = key;
+        tmp->value = value;
+        (*tree)->left = NULL;
+      }
+    }
+    // key is bigger go right
+    else if ((*tree)->right != NULL)
+    {
+      bst_insert(&((*tree)->right), key, value);
+    }
+    // if next is empty insert
+    else
+    {
+      bst_node_t *tmp = malloc(sizeof(bst_node_t));
+      tmp->key = key;
+      tmp->value = value;
+      (*tree)->right = tmp;
+    }
+  }
 }
 
 /*
@@ -76,6 +110,18 @@ void bst_insert(bst_node_t **tree, char key, int value)
  */
 void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree)
 {
+  if ((*tree)->right->right == NULL)
+  {
+    target->key = (*tree)->right->key;
+    target->value = (*tree)->right->value;
+    // free the element
+    free((*tree)->right);
+    (*tree)->right = NULL;
+  }
+  else
+  {
+    bst_replace_by_rightmost(target, &((*tree)->right));
+  }
 }
 
 /*
@@ -93,6 +139,59 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree)
  */
 void bst_delete(bst_node_t **tree, char key)
 {
+  if (tree != NULL)
+  {
+    // if right exist look if fits
+    if ((*tree)->right)
+    {
+      if ((*tree)->right->key == key)
+      {
+        if ((*tree)->right->left)
+        {
+          bst_node_t *tmp = malloc(sizeof(bst_node_t));
+          bst_replace_by_rightmost(tmp, &((*tree)->right->left));
+          (*tree)->right = tmp;
+          return;
+        }
+        else if ((*tree)->right->right)
+        {
+          // no left tree
+          free((*tree)->right);
+          (*tree)->right = (*tree)->right->right;
+        }
+        // no tree on the left or right so just free
+        else
+          free((*tree)->right);
+      }
+    }
+    // if left exist look if fits
+    if ((*tree)->left)
+    {
+      if ((*tree)->left->key == key)
+      {
+        if ((*tree)->left->left)
+        {
+          bst_node_t *tmp = malloc(sizeof(bst_node_t));
+          bst_replace_by_rightmost(tmp, &((*tree)->left->left));
+          (*tree)->left = tmp;
+          return;
+        }
+        else if ((*tree)->left->right)
+        {
+          // no left tree
+          free((*tree)->left);
+          (*tree)->left = (*tree)->left->right;
+        }
+        // no tree on the left or right so just free
+        else
+          free((*tree)->left);
+      }
+    }
+    else if ((*tree)->key < key)
+      bst_delete(&((*tree)->left), key);
+    else
+      bst_delete(&((*tree)->right), key);
+  }
 }
 
 /*
@@ -106,6 +205,12 @@ void bst_delete(bst_node_t **tree, char key)
  */
 void bst_dispose(bst_node_t **tree)
 {
+  if ((*tree))
+  {
+    bst_dispose(&(*tree)->left);
+    bst_dispose(&(*tree)->right);
+    free(*tree);
+  }
 }
 
 /*
@@ -117,6 +222,12 @@ void bst_dispose(bst_node_t **tree)
  */
 void bst_preorder(bst_node_t *tree, bst_items_t *items)
 {
+  if (tree)
+  {
+    bst_add_node_to_items(tree, items);
+    bst_preorder(tree->left, items);
+    bst_preorder(tree->right, items);
+  }
 }
 
 /*
@@ -128,6 +239,12 @@ void bst_preorder(bst_node_t *tree, bst_items_t *items)
  */
 void bst_inorder(bst_node_t *tree, bst_items_t *items)
 {
+  if (tree)
+  {
+    bst_preorder(tree->left, items);
+    bst_add_node_to_items(tree, items);
+    bst_preorder(tree->right, items);
+  }
 }
 
 /*
@@ -139,4 +256,10 @@ void bst_inorder(bst_node_t *tree, bst_items_t *items)
  */
 void bst_postorder(bst_node_t *tree, bst_items_t *items)
 {
+  if (tree)
+  {
+    bst_preorder(tree->left, items);
+    bst_preorder(tree->right, items);
+    bst_add_node_to_items(tree, items);
+  }
 }
