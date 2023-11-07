@@ -40,7 +40,10 @@ bool bst_search(bst_node_t *tree, char key, int *value)
       *value = tree->value;
       return true;
     }
-    return false || bst_search(tree->left, key, value) || bst_search(tree->right, key, value);
+    else if(tree->key > key)
+      return bst_search(tree->left, key, value);
+    else
+      return bst_search(tree->right, key, value);
   }
   return false;
 }
