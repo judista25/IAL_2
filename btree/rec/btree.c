@@ -210,6 +210,7 @@ void bst_dispose(bst_node_t **tree)
     bst_dispose(&(*tree)->left);
     bst_dispose(&(*tree)->right);
     free(*tree);
+    (*tree) = NULL;
   }
 }
 
