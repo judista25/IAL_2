@@ -139,7 +139,7 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree)
  */
 void bst_delete(bst_node_t **tree, char key)
 {
-  if (tree != NULL)
+  if ((*tree) != NULL)
   {
     if ((*tree)->key == key)
     {
