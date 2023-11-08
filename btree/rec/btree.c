@@ -215,10 +215,9 @@ void bst_inorder(bst_node_t *tree, bst_items_t *items)
 {
   if (tree)
   {
-    fprintf(stderr,"prd %c\n",tree->key);
-    bst_preorder(tree->left, items);
+    bst_inorder(tree->left, items);
     bst_add_node_to_items(tree, items);
-    bst_preorder(tree->right, items);
+    bst_inorder(tree->right, items);
   }
 }
 
@@ -233,8 +232,8 @@ void bst_postorder(bst_node_t *tree, bst_items_t *items)
 {
   if (tree)
   {
-    bst_preorder(tree->left, items);
-    bst_preorder(tree->right, items);
+    bst_postorder(tree->left, items);
+    bst_postorder(tree->right, items);
     bst_add_node_to_items(tree, items);
   }
 }
