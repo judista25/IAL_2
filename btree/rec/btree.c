@@ -115,7 +115,8 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree)
       // free the element
       if ((*tree)->left)
       {
-        bst_node_t * tmp = (*tree);
+        // if left tree exist conect it
+        bst_node_t *tmp = (*tree);
         (*tree) = (*tree)->left;
         free(tmp);
       }
