@@ -66,7 +66,7 @@ void bst_insert(bst_node_t **tree, char key, int value)
     if ((*tree)->key == key)
     {
       (*tree)->value = value;
-      //return;
+      // return;
     }
     // key is smaller go left
     else if ((*tree)->key > key)
@@ -113,13 +113,20 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree)
       target->key = (*tree)->key;
       target->value = (*tree)->value;
       // free the element
-      free((*tree));
-      (*tree) = NULL;
+      if ((*tree)->left)
+      {
+        bst_node_t * tmp = (*tree);
+        (*tree) = (*tree)->left;
+        free(tmp);
+      }
+      else
+      {
+        free((*tree));
+        (*tree) = NULL;
+      }
     }
     else
-    {
       bst_replace_by_rightmost(target, &((*tree)->right));
-    }
   }
 }
 
