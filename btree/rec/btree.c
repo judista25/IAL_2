@@ -142,7 +142,7 @@ void bst_delete(bst_node_t **tree, char key)
       if ((*tree)->left)
       {
         // change value of current tree
-        bst_replace_by_rightmost((*tree), (*tree)->left);
+        bst_replace_by_rightmost((*tree), &((*tree)->left));
       }
       else if ((*tree)->right)
       {
@@ -158,9 +158,9 @@ void bst_delete(bst_node_t **tree, char key)
       }
     }
     else if ((*tree)->key > key)
-      bst_delete((*tree)->left, key);
+      bst_delete(&((*tree)->left), key);
     else
-      bst_delete((*tree)->right, key);
+      bst_delete(&((*tree)->right), key);
   }
 }
 
