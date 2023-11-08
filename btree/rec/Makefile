@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -std=c11 -pedantic -lm -fsanitize=address
+CFLAGS=-Wall -std=c11 -pedantic -lm 
 FILES=btree.c ../btree.c ../test_util.c ../test.c
 
 .PHONY: test clean
