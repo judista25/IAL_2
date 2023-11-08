@@ -40,7 +40,7 @@ bool bst_search(bst_node_t *tree, char key, int *value)
       *value = tree->value;
       return true;
     }
-    else if(tree->key > key)
+    else if (tree->key > key)
       return bst_search(tree->left, key, value);
     else
       return bst_search(tree->right, key, value);
@@ -71,30 +71,23 @@ void bst_insert(bst_node_t **tree, char key, int value)
     // key is smaller go left
     else if ((*tree)->key > key)
     {
-      if ((*tree)->left != NULL)
+        //fprintf(stderr, "prd\n");
         bst_insert(&((*tree)->left), key, value);
-      // if next is empty insert
-      else
-      {
-        bst_node_t *tmp = malloc(sizeof(bst_node_t));
-        tmp->key = key;
-        tmp->value = value;
-        (*tree)->left = NULL;
-      }
     }
-    // key is bigger go right
-    else if ((*tree)->right != NULL)
+    else
     {
       bst_insert(&((*tree)->right), key, value);
     }
     // if next is empty insert
-    else
-    {
-      bst_node_t *tmp = malloc(sizeof(bst_node_t));
-      tmp->key = key;
-      tmp->value = value;
-      (*tree)->right = tmp;
-    }
+  }
+  else
+  {
+    bst_node_t *tmp = malloc(sizeof(bst_node_t));
+    tmp->key = key;
+    tmp->value = value;
+    tmp->left = NULL;
+    tmp->right = NULL;
+    (*tree) = tmp;
   }
 }
 
@@ -247,7 +240,7 @@ void bst_dispose(bst_node_t **tree)
     bst_dispose(&(*tree)->left);
     bst_dispose(&(*tree)->right);
     free(*tree);
-    //*tree = NULL;
+    *tree = NULL;
   }
 }
 
