@@ -66,7 +66,7 @@ void bst_insert(bst_node_t **tree, char key, int value)
     if ((*tree)->key == key)
     {
       (*tree)->value = value;
-      return;
+      //return;
     }
     // key is smaller go left
     else if ((*tree)->key > key)
@@ -82,7 +82,7 @@ void bst_insert(bst_node_t **tree, char key, int value)
   }
   else
   {
-    bst_node_t *tmp = malloc(sizeof(bst_node_t));
+    bst_node_t *tmp = malloc(sizeof(struct bst_node));
     tmp->key = key;
     tmp->value = value;
     tmp->left = NULL;
@@ -144,7 +144,7 @@ void bst_delete(bst_node_t **tree, char key)
     {
       if ((*tree)->left)
       {
-        // change value of current tree
+        // change value of current node for right most
         bst_replace_by_rightmost((*tree), &((*tree)->left));
       }
       else if ((*tree)->right)
@@ -183,7 +183,7 @@ void bst_dispose(bst_node_t **tree)
     bst_dispose(&(*tree)->left);
     bst_dispose(&(*tree)->right);
     free(*tree);
-    *tree = NULL;
+    (*tree) = NULL;
   }
 }
 
