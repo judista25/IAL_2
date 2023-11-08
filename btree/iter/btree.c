@@ -63,48 +63,30 @@ bool bst_search(bst_node_t *tree, char key, int *value)
  */
 void bst_insert(bst_node_t **tree, char key, int value)
 {
-  while (true)
+  while (*tree)
   {
-    if ((*tree) != NULL)
+    if ((*tree)->key == key)
     {
-      if ((*tree)->key == key)
-      {
-        (*tree)->value = value;
-        return;
-      }
-      // key is smaller go left
-      else if ((*tree)->key > key)
-      {
-        if ((*tree)->left != NULL)
-          (*tree) = (*tree)->left;
-        // if next is empty insert
-        else
-        {
-          bst_node_t *tmp = malloc(sizeof(bst_node_t));
-          tmp->key = key;
-          tmp->value = value;
-          (*tree)->left = NULL;
-          break;
-        }
-      }
-      // key is bigger go right
-      else if ((*tree)->right != NULL)
-      {
-        (*tree) = (*tree)->left;
-      }
-      // if next is empty insert
-      else
-      {
-        bst_node_t *tmp = malloc(sizeof(bst_node_t));
-        tmp->key = key;
-        tmp->value = value;
-        (*tree)->right = tmp;
-        break;
-      }
+      (*tree)->value = value;
+      return;
+    }
+    // key is smaller go left
+    else if ((*tree)->key > key)
+    {
+      tree = &(*tree)->left;
     }
     else
-      break;
+    {
+      tree = &(*tree)->right;
+    }
+    // if next is empty insert
   }
+  bst_node_t *tmp = malloc(sizeof(struct bst_node));
+  tmp->key = key;
+  tmp->value = value;
+  tmp->left = NULL;
+  tmp->right = NULL;
+  (*tree) = tmp;
 }
 
 /*
@@ -124,18 +106,26 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree)
 {
   while (*tree)
   {
-    if ((*tree)->right->right == NULL)
+    if ((*tree)->right == NULL)
     {
-      target->key = (*tree)->right->key;
-      target->value = (*tree)->right->value;
+      target->key = (*tree)->key;
+      target->value = (*tree)->value;
       // free the element
-      free((*tree)->right);
-      (*tree)->right = NULL;
+      if ((*tree)->left)
+      {
+        // if left tree exist conect it
+        bst_node_t *tmp = (*tree);
+        (*tree) = (*tree)->left;
+        free(tmp);
+      }
+      else
+      {
+        free((*tree));
+        (*tree) = NULL;
+      }
     }
     else
-    {
-      (*tree) = (*tree)->right;
-    }
+      tree = &(*tree)->right;
   }
 }
 
@@ -160,86 +150,26 @@ void bst_delete(bst_node_t **tree, char key)
     {
       if ((*tree)->left)
       {
-        bst_node_t *tmp = malloc(sizeof(bst_node_t));
-        bst_replace_by_rightmost(tmp, &((*tree)->left));
-        (*tree) = tmp;
-        return;
+        // change value of current node for right most
+        bst_replace_by_rightmost((*tree), &((*tree)->left));
       }
       else if ((*tree)->right)
       {
-        // no left tree
-        free((*tree));
+        bst_node_t *tmp = (*tree);
         (*tree) = (*tree)->right;
-        return;
+        free(tmp);
       }
-      // no tree on the left or right so just free
       else
       {
-        free((*tree));
-        return;
+        // leaf
+        free(*tree);
+        *tree = NULL;
       }
     }
+    else if ((*tree)->key > key)
+      tree = &(*tree)->left;
     else
-    {
-      // if right exist look if fits
-      if ((*tree)->right)
-      {
-        if ((*tree)->right->key == key)
-        {
-          if ((*tree)->right->left)
-          {
-            bst_node_t *tmp = malloc(sizeof(bst_node_t));
-            bst_replace_by_rightmost(tmp, &((*tree)->right->left));
-            (*tree)->right = tmp;
-            return;
-          }
-          else if ((*tree)->right->right)
-          {
-            // no left tree
-            free((*tree)->right);
-            (*tree)->right = (*tree)->right->right;
-            return;
-          }
-          // no tree on the left or right so just free
-          else
-          {
-            free((*tree)->right);
-            return;
-          }
-        }
-      }
-      // if left exist look if fits
-      if ((*tree)->left)
-      {
-        if ((*tree)->left->key == key)
-        {
-          if ((*tree)->left->left)
-          {
-            bst_node_t *tmp = malloc(sizeof(bst_node_t));
-            bst_replace_by_rightmost(tmp, &((*tree)->left->left));
-            (*tree)->left = tmp;
-            return;
-          }
-          else if ((*tree)->left->right)
-          {
-            // no left tree
-            free((*tree)->left);
-            (*tree)->left = (*tree)->left->right;
-            return;
-          }
-          // no tree on the left or right so just free
-          else
-          {
-            free((*tree)->left);
-            return;
-          }
-        }
-      }
-      if ((*tree)->key < key)
-        (*tree) = (*tree)->left;
-      else
-        (*tree) = (*tree)->right;
-    }
+      tree = &(*tree)->right;
   }
 }
 
@@ -335,6 +265,11 @@ void bst_preorder(bst_node_t *tree, bst_items_t *items)
  */
 void bst_leftmost_inorder(bst_node_t *tree, stack_bst_t *to_visit)
 {
+  while (tree)
+  {
+    stack_bst_push(to_visit, tree);
+    tree = tree->left;
+  }
 }
 
 /*
@@ -347,6 +282,23 @@ void bst_leftmost_inorder(bst_node_t *tree, stack_bst_t *to_visit)
  */
 void bst_inorder(bst_node_t *tree, bst_items_t *items)
 {
+  if (!tree)
+    return;
+  stack_bst_t stack;
+  stack_bst_init(&stack);
+  // fill stack with left most
+  bst_leftmost_inorder(tree, &stack);
+
+  while (!stack_bst_empty(&stack))
+  {
+    bst_node_t *current = stack_bst_top(&stack);
+    stack_bst_pop(&stack);
+    bst_add_node_to_items(current, items);
+
+    // If right subtree exist
+    if (current->right)
+      bst_leftmost_inorder(current->right, &stack);
+  }
 }
 
 /*
