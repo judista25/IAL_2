@@ -71,8 +71,8 @@ void bst_insert(bst_node_t **tree, char key, int value)
     // key is smaller go left
     else if ((*tree)->key > key)
     {
-        //fprintf(stderr, "prd\n");
-        bst_insert(&((*tree)->left), key, value);
+      // fprintf(stderr, "prd\n");
+      bst_insert(&((*tree)->left), key, value);
     }
     else
     {
@@ -135,92 +135,32 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree)
  */
 void bst_delete(bst_node_t **tree, char key)
 {
-  if ((*tree) != NULL)
+  if (*tree)
   {
     if ((*tree)->key == key)
     {
       if ((*tree)->left)
       {
-        bst_node_t *tmp = malloc(sizeof(bst_node_t));
-        bst_replace_by_rightmost(tmp, &((*tree)->left));
-        (*tree) = tmp;
-        return;
+        // change value of current tree
+        bst_replace_by_rightmost((*tree), (*tree)->left);
       }
       else if ((*tree)->right)
       {
-        // no left tree
-        free((*tree));
+        bst_node_t *tmp = (*tree);
         (*tree) = (*tree)->right;
-        return;
+        free(tmp);
       }
-      // no tree on the left or right so just free
       else
       {
-        free((*tree));
-        return;
+        // leaf
+        free(*tree);
+        *tree = NULL;
       }
     }
+    else if ((*tree)->key > key)
+      bst_delete((*tree)->left, key);
     else
-    {
-      // if right exist look if fits
-      if ((*tree)->right)
-      {
-        if ((*tree)->right->key == key)
-        {
-          if ((*tree)->right->left)
-          {
-            bst_node_t *tmp = malloc(sizeof(bst_node_t));
-            bst_replace_by_rightmost(tmp, &((*tree)->right->left));
-            (*tree)->right = tmp;
-            return;
-          }
-          else if ((*tree)->right->right)
-          {
-            // no left tree
-            free((*tree)->right);
-            (*tree)->right = (*tree)->right->right;
-            return;
-          }
-          // no tree on the left or right so just free
-          else
-          {
-            free((*tree)->right);
-            return;
-          }
-        }
-      }
-      // if left exist look if fits
-      if ((*tree)->left)
-      {
-        if ((*tree)->left->key == key)
-        {
-          if ((*tree)->left->left)
-          {
-            bst_node_t *tmp = malloc(sizeof(bst_node_t));
-            bst_replace_by_rightmost(tmp, &((*tree)->left->left));
-            (*tree)->left = tmp;
-            return;
-          }
-          else if ((*tree)->left->right)
-          {
-            // no left tree
-            free((*tree)->left);
-            (*tree)->left = (*tree)->left->right;
-            return;
-          }
-          // no tree on the left or right so just free
-          else
-          {
-            free((*tree)->left);
-            return;
-          }
-        }
-      }
-      if ((*tree)->key < key)
-        bst_delete(&((*tree)->left), key);
-      else
-        bst_delete(&((*tree)->right), key);
-    }
+      bst_delete((*tree)->right, key);
   }
 }
 
