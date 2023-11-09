@@ -73,11 +73,11 @@ void bst_insert(bst_node_t **tree, char key, int value)
     // key is smaller go left
     else if ((*tree)->key > key)
     {
-      tree = &(*tree)->left;
+      tree = &((*tree)->left);
     }
     else
     {
-      tree = &(*tree)->right;
+      tree = &((*tree)->right);
     }
     // if next is empty insert
   }
@@ -127,7 +127,7 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree)
       return;
     }
     else
-      tree = &(*tree)->right;
+      tree = &((*tree)->right);
   }
 }
 
@@ -170,9 +170,9 @@ void bst_delete(bst_node_t **tree, char key)
       return;
     }
     else if ((*tree)->key > key)
-      tree = &(*tree)->left;
+      tree = &((*tree)->left);
     else
-      tree = &(*tree)->right;
+      tree = &((*tree)->right);
   }
 }
 
@@ -194,7 +194,7 @@ void bst_dispose(bst_node_t **tree)
   stack_bst_init(&stack);
   int i = 0;
   stack_bst_push(&stack, *tree);
-  for (;i <= stack.top;i++)
+  for (; i <= stack.top; i++)
   {
     if (stack.items[i]->left)
       stack_bst_push(&stack, stack.items[i]->left);
