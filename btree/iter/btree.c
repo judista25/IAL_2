@@ -251,7 +251,7 @@ void bst_preorder(bst_node_t *tree, bst_items_t *items)
   {
     bst_node_t *current = stack_bst_top(&stack);
     stack_bst_pop(&stack);
-    //bst_add_node_to_items(current, items);
+    // bst_add_node_to_items(current, items);
 
     // If right subtree exist
     if (current->right)
@@ -346,19 +346,17 @@ void bst_postorder(bst_node_t *tree, bst_items_t *items)
   while (!stack_bst_empty(&s1))
   {
     tree = stack_bst_top(&s1);
-    fromLeft = stack_bool_top(&s2);
-    stack_bool_pop(&s2);
+    fromLeft = stack_bool_pop(&s2);
+    // stack_bool_pop(&s2);
     if (fromLeft)
     {
       stack_bool_push(&s2, false);
-      bst_leftmost_postorder(tree, &s1, &s2);
+      bst_leftmost_postorder(tree->right, &s1, &s2);
     }
     else
     {
       stack_bst_pop(&s1);
-      fprintf(stderr,"[%c,%d] ",tree->key,tree->value);
       bst_add_node_to_items(tree, items);
     }
   }
-  fprintf(stderr,"konec\n");
 }
