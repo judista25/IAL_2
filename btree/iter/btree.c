@@ -190,22 +190,25 @@ void bst_dispose(bst_node_t **tree)
 {
   if (!(*tree))
     return;
+
   stack_bst_t stack;
   stack_bst_init(&stack);
-  int i = 0;
   stack_bst_push(&stack, *tree);
-  for (; i <= stack.top; i++)
+
+  while (stack.top >= 0)
   {
-    if (stack.items[i]->left)
-      stack_bst_push(&stack, stack.items[i]->left);
-    if (stack.items[i]->right)
-      stack_bst_push(&stack, stack.items[i]->right);
+    bst_node_t *current = stack_bst_top(&stack);
+    stack_bst_pop(&stack);
+
+    if (current->left)
+      stack_bst_push(&stack, current->left);
+    if (current->right)
+      stack_bst_push(&stack, current->right);
+
+    free(current);
   }
-  for (; i >= 0; i--)
-  {
-    free(stack.items[i]);
-    // stack_bst_pop(&stack);
-  }
+
+  *tree = NULL; // Nastavíme odkaz na kořen na NULL, aby bylo jasné, že strom je uvolněn.
 }
 
 /*
