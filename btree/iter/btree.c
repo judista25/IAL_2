@@ -165,7 +165,7 @@ void bst_delete(bst_node_t **tree, char key)
       {
         // leaf
         free(*tree);
-        *tree = NULL;
+        (*tree) = NULL;
       }
       return;
     }
@@ -188,19 +188,18 @@ void bst_delete(bst_node_t **tree, char key)
  */
 void bst_dispose(bst_node_t **tree)
 {
-  if (!*tree)
+  if (!(*tree))
     return;
   stack_bst_t stack;
   stack_bst_init(&stack);
   int i = 0;
   stack_bst_push(&stack, *tree);
-  while (i <= stack.top)
+  for (;i <= stack.top;i++)
   {
     if (stack.items[i]->left)
       stack_bst_push(&stack, stack.items[i]->left);
     if (stack.items[i]->right)
       stack_bst_push(&stack, stack.items[i]->right);
-    i++;
   }
   for (; i >= 0; i--)
   {
