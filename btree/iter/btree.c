@@ -197,18 +197,18 @@ void bst_dispose(bst_node_t **tree)
 
   while (stack.top >= 0)
   {
-    bst_node_t *current = stack_bst_top(&stack);
+    bst_node_t *head = stack_bst_top(&stack);
     stack_bst_pop(&stack);
 
-    if (current->left)
-      stack_bst_push(&stack, current->left);
-    if (current->right)
-      stack_bst_push(&stack, current->right);
+    if (head->left)
+      stack_bst_push(&stack, head->left);
+    if (head->right)
+      stack_bst_push(&stack, head->right);
 
-    free(current);
+    free(head);
   }
-
-  *tree = NULL; // Nastavíme odkaz na kořen na NULL, aby bylo jasné, že strom je uvolněn.
+  //init tree
+  *tree = NULL; 
 }
 
 /*
@@ -240,7 +240,6 @@ void bst_leftmost_preorder(bst_node_t *tree, stack_bst_t *to_visit, bst_items_t 
  */
 void bst_preorder(bst_node_t *tree, bst_items_t *items)
 {
-  return;
   if (!tree)
     return;
   stack_bst_t stack;
@@ -271,7 +270,6 @@ void bst_preorder(bst_node_t *tree, bst_items_t *items)
  */
 void bst_leftmost_inorder(bst_node_t *tree, stack_bst_t *to_visit)
 {
-  return;
   while (tree)
   {
     stack_bst_push(to_visit, tree);
@@ -289,7 +287,6 @@ void bst_leftmost_inorder(bst_node_t *tree, stack_bst_t *to_visit)
  */
 void bst_inorder(bst_node_t *tree, bst_items_t *items)
 {
-  return;
   if (!tree)
     return;
   stack_bst_t stack;
