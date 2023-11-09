@@ -343,7 +343,7 @@ void bst_postorder(bst_node_t *tree, bst_items_t *items)
   stack_bst_init(&s1);
   stack_bool_init(&s2);
   bst_leftmost_postorder(tree, &s1, &s2);
-  while (stack_bst_empty(&s1))
+  while (!stack_bst_empty(&s1))
   {
     tree = stack_bst_top(&s1);
     fromLeft = stack_bool_top(&s2);
