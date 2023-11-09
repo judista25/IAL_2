@@ -114,6 +114,7 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree)
       if ((*tree)->left)
       {
         // if left tree exist conect it
+        fprintf(stderr, "free shit in replace\n");
         bst_node_t *tmp = (*tree);
         (*tree) = (*tree)->left;
         free(tmp);
@@ -123,6 +124,7 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree)
         free((*tree));
         (*tree) = NULL;
       }
+      return;
     }
     else
       tree = &(*tree)->right;
@@ -165,6 +167,7 @@ void bst_delete(bst_node_t **tree, char key)
         free(*tree);
         *tree = NULL;
       }
+      return;
     }
     else if ((*tree)->key > key)
       tree = &(*tree)->left;
