@@ -207,8 +207,8 @@ void bst_dispose(bst_node_t **tree)
 
     free(head);
   }
-  //init tree
-  *tree = NULL; 
+  // init tree
+  *tree = NULL;
 }
 
 /*
@@ -251,7 +251,7 @@ void bst_preorder(bst_node_t *tree, bst_items_t *items)
   {
     bst_node_t *current = stack_bst_top(&stack);
     stack_bst_pop(&stack);
-    bst_add_node_to_items(current, items);
+    //bst_add_node_to_items(current, items);
 
     // If right subtree exist
     if (current->right)
@@ -319,6 +319,12 @@ void bst_inorder(bst_node_t *tree, bst_items_t *items)
 void bst_leftmost_postorder(bst_node_t *tree, stack_bst_t *to_visit,
                             stack_bool_t *first_visit)
 {
+  while (tree)
+  {
+    stack_bst_push(to_visit, tree);
+    stack_bool_push(first_visit, true);
+    tree = (tree)->left;
+  }
 }
 
 /*
@@ -331,4 +337,28 @@ void bst_leftmost_postorder(bst_node_t *tree, stack_bst_t *to_visit,
  */
 void bst_postorder(bst_node_t *tree, bst_items_t *items)
 {
+  bool fromLeft = false;
+  stack_bst_t s1;
+  stack_bool_t s2;
+  stack_bst_init(&s1);
+  stack_bool_init(&s2);
+  bst_leftmost_postorder(tree, &s1, &s2);
+  while (stack_bst_empty(&s1))
+  {
+    tree = stack_bst_top(&s1);
+    fromLeft = stack_bool_top(&s2);
+    stack_bool_pop(&s2);
+    if (fromLeft)
+    {
+      stack_bool_push(&s2, false);
+      bst_leftmost_postorder(tree, &s1, &s2);
+    }
+    else
+    {
+      stack_bst_pop(&s1);
+      fprintf(stderr,"[%c,%d] ",tree->key,tree->value);
+      bst_add_node_to_items(tree, items);
+    }
+  }
+  fprintf(stderr,"\n");
 }
