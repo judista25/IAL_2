@@ -360,5 +360,5 @@ void bst_postorder(bst_node_t *tree, bst_items_t *items)
       bst_add_node_to_items(tree, items);
     }
   }
-  fprintf(stderr,"\n");
+  fprintf(stderr,"konec\n");
 }
