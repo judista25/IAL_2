@@ -238,6 +238,7 @@ void bst_leftmost_preorder(bst_node_t *tree, stack_bst_t *to_visit, bst_items_t 
  */
 void bst_preorder(bst_node_t *tree, bst_items_t *items)
 {
+  return;
   if (!tree)
     return;
   stack_bst_t stack;
@@ -268,6 +269,7 @@ void bst_preorder(bst_node_t *tree, bst_items_t *items)
  */
 void bst_leftmost_inorder(bst_node_t *tree, stack_bst_t *to_visit)
 {
+  return;
   while (tree)
   {
     stack_bst_push(to_visit, tree);
@@ -285,6 +287,7 @@ void bst_leftmost_inorder(bst_node_t *tree, stack_bst_t *to_visit)
  */
 void bst_inorder(bst_node_t *tree, bst_items_t *items)
 {
+  return;
   if (!tree)
     return;
   stack_bst_t stack;
