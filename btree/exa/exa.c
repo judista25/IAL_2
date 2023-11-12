@@ -69,7 +69,7 @@ void letter_count(bst_node_t **tree, char *input)
  *
  * Pro implementaci si můžete v tomto souboru nadefinovat vlastní pomocné funkce. Není nutné, aby funkce fungovala *in situ* (in-place).
  */
-void inorderStack(bst_node_t **tree, stack_t *stack)
+void inorderStack(bst_node_t **tree, stack_bst_t *stack)
 {
     if (*tree)
     {
