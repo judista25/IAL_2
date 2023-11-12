@@ -9,7 +9,6 @@
  */
 
 #include "../btree.h"
-#include "../iter/stack.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -69,26 +68,25 @@ void letter_count(bst_node_t **tree, char *input)
  *
  * Pro implementaci si můžete v tomto souboru nadefinovat vlastní pomocné funkce. Není nutné, aby funkce fungovala *in situ* (in-place).
  */
-void inorderStack(bst_node_t **tree, stack_bst_t *stack)
+
+void buildTree(bst_node_t **tree, bst_items_t *stack, int start , int end)
 {
-    if (*tree)
+    if (start > end)
     {
-        inorderStack(&((*tree)->left), stack);
-        stack_bst_push(stack, *tree);
-        inorderStack(&((*tree)->left), stack);
+        //fprintf(stderr, "prd range : %d - %d\n",mid,mid);
+        int i = (start + end)/2;
+        *tree = stack->nodes[i];
+        buildTree(&((*tree)->left), stack, start,i-1);
+        buildTree(&((*tree)->right), stack, i-1,end);
     }
-}
-void buildTree(bst_node_t **tree, stack_bst_t *stack, int start, int end)
-{
-    *tree = stack->items[(start + end) / 2];
-    buildTree(&((*tree)->right), stack, start, end / 2);
-    buildTree(&((*tree)->left), stack, (start + end) / 2, end);
 }
 void bst_balance(bst_node_t **tree)
 {
-    stack_bst_t treeArr;
-    stack_bst_init(&treeArr);
-    inorderStack(tree, &treeArr);
-    buildTree(tree, &treeArr, 0, treeArr.top);
-
+    bst_items_t treeArr;
+    treeArr.capacity = 0;
+    treeArr.size = 0;
+    treeArr.nodes = NULL;
+    bst_inorder(*tree, &treeArr);
+    buildTree(tree, &treeArr, 0,treeArr.size-1);
+    free(treeArr.nodes);
 }
